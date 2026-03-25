@@ -7,7 +7,7 @@ let figuraActiva = "circulo";
 let tamActual = 30;
 
 const MENU_HEIGHT = 90;
-const TIPOS = ["circulo", "cuadrado", "triangulo", "billCipher"];
+const TIPOS = ["circulo", "cuadrado", "triangulo", "billCipher", "mariposa"];
 const WHEEL_SENSITIVITY = 0.05;
 
 function setup() {
