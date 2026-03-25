@@ -8,7 +8,7 @@ let colorActual = "#ef4444";
 let tamActual = 30;
 
 const MENU_HEIGHT = 90;
-const TIPOS = ["circulo", "cuadrado", "triangulo", "personaje"];
+const TIPOS = ["circulo", "cuadrado", "triangulo", "billCipher"];
 const MENU_COLS = ["#ef4444", "#22c55e", "#3b82f6", "#f59e0b"];
 const WHEEL_SENSITIVITY = 0.05;
 

@@ -1,5 +1,5 @@
 // Ejemplo de figura compleja
-class Personaje extends Figura {
+class BillCipher extends Figura {
   _drawShape() {
     push();
 
