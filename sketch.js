@@ -14,6 +14,8 @@ class Figura {
 
   display() {}
 
+  displayOutline() {}
+
   isClicked(mx, my) {
     return dist(mx, my, this.x, this.y) < this.tam / 2;
   }
@@ -21,29 +23,62 @@ class Figura {
 
 // --- Subclases ---
 class Circulo extends Figura {
+  _drawShape() {
+    ellipse(this.x, this.y, this.tam);
+  }
+
   display() {
     fill(this.col);
-    ellipse(this.x, this.y, this.tam);
+    this._drawShape();
+  }
+
+  displayOutline() {
+    noFill();
+    stroke(this.col);
+    strokeWeight(1.5);
+    this._drawShape();
   }
 }
 
 class Cuadrado extends Figura {
-  display() {
-    fill(this.col);
+  _drawShape() {
     rectMode(CENTER);
     rect(this.x, this.y, this.tam, this.tam);
     rectMode(CORNER);
   }
+
+  display() {
+    fill(this.col);
+    this._drawShape();
+  }
+
+  displayOutline() {
+    noFill();
+    stroke(this.col);
+    strokeWeight(1.5);
+    this._drawShape();
+  }
 }
 
 class Triangulo extends Figura {
-  display() {
-    fill(this.col);
+  _drawShape() {
     triangle(
-      this.x,               this.y - this.tam / 2,
+      this.x,                this.y - this.tam / 2,
       this.x - this.tam / 2, this.y + this.tam / 2,
       this.x + this.tam / 2, this.y + this.tam / 2
     );
+  }
+
+  display() {
+    fill(this.col);
+    this._drawShape();
+  }
+
+  displayOutline() {
+    noFill();
+    stroke(this.col);
+    strokeWeight(1.5);
+    this._drawShape();
   }
 }
 
@@ -111,6 +146,13 @@ function draw() {
     item.display();
   }
   noStroke();
+
+  // Preview del cursor: contorno de la figura activa en la posición del puntero
+  if (mouseY > MENU_HEIGHT) {
+    const preview = FiguraFactory.crear(figuraActiva, mouseX, mouseY, tamActual, colorActual);
+    preview.displayOutline();
+    noStroke();
+  }
 }
 
 function mousePressed() {
