@@ -1,5 +1,10 @@
 // Plantilla para estudiantes: crear una figura nueva en archivo independiente.
 class EjemploSubclase extends Figura {
+  constructor(x, y, tam, tipo) {
+    super(x, y, tam, tipo);
+    this.col = "#a855f7";
+  }
+
   _drawShape() {
     // Reemplazar por la forma que quieras
     ellipse(this.x, this.y, this.tam, this.tam * 0.6);
@@ -24,6 +29,6 @@ class EjemploSubclase extends Figura {
 Pasos para integrarla:
 1) Incluir este archivo en index.html (antes de FiguraFactory.js).
 2) Agregar un case en FiguraFactory.js, por ejemplo:
-   case "ejemplo": return new EjemploSubclase(x, y, tam, col, tipo);
-3) Agregar "ejemplo" al arreglo TIPOS en sketch.js y su color en MENU_COLS.
+   case "ejemplo": return new EjemploSubclase(x, y, tam, tipo);
+3) Agregar "ejemplo" al arreglo TIPOS en sketch.js.
 */

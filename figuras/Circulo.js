@@ -1,4 +1,9 @@
 class Circulo extends Figura {
+  constructor(x, y, tam, tipo) {
+    super(x, y, tam, tipo);
+    this.col = "#ef4444";
+  }
+
   _drawShape() {
     ellipse(this.x, this.y, this.tam);
   }

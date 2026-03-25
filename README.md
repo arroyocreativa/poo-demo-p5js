@@ -47,7 +47,7 @@ Archivo: `figuras/Figura.js`
 
 Responsabilidades:
 
-1. Guardar estado común: `x`, `y`, `tam`, `col`, `tipo`.
+1. Guardar estado común: `x`, `y`, `tam`, `tipo`.
 2. Definir la interfaz común: `display()` y `displayOutline()`.
 3. Ofrecer utilidad compartida: `isClicked(mx, my)` para detectar clics en menú.
 
@@ -68,9 +68,10 @@ Archivos:
 Cada subclase:
 
 1. Hereda de `Figura` (`extends Figura`).
-2. Implementa su forma en `_drawShape()`.
-3. Implementa `display()` (relleno + borde).
-4. Implementa `displayOutline()` (solo contorno para preview).
+2. Define su propio color en el constructor (`this.col`).
+3. Implementa su forma en `_drawShape()`.
+4. Implementa `display()` (relleno + borde).
+5. Implementa `displayOutline()` (solo contorno para preview).
 
 Esto permite polimorfismo: el programa llama `display()` sin saber si es círculo, triángulo o Bill Cipher.
 
@@ -78,7 +79,7 @@ Esto permite polimorfismo: el programa llama `display()` sin saber si es círcul
 
 Archivo: `figuras/FiguraFactory.js`
 
-`FiguraFactory.crear(tipo, x, y, tam, col)` centraliza la creación de objetos:
+`FiguraFactory.crear(tipo, x, y, tam)` centraliza la creación de objetos:
 
 1. Si `tipo` es `circulo`, retorna `new Circulo(...)`.
 2. Si `tipo` es `cuadrado`, retorna `new Cuadrado(...)`.
@@ -141,6 +142,6 @@ Pasos:
 2. Implementar `_drawShape()`, `display()` y `displayOutline()`.
 3. Cargar el script en `index.html` antes de `FiguraFactory.js`.
 4. Agregar caso `estrella` en `FiguraFactory.crear(...)`.
-5. Incluir `estrella` en `TIPOS` y su color en `MENU_COLS` en `sketch.js`.
+5. Incluir `estrella` en `TIPOS` en `sketch.js`.
 
 Con esto se evidencia el principio Open/Closed: extender comportamiento sin reescribir toda la app.

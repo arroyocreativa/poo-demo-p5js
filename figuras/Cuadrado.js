@@ -1,4 +1,9 @@
 class Cuadrado extends Figura {
+  constructor(x, y, tam, tipo) {
+    super(x, y, tam, tipo);
+    this.col = "#22c55e";
+  }
+
   _drawShape() {
     rectMode(CENTER);
     rect(this.x, this.y, this.tam, this.tam);
