@@ -1,15 +1,6 @@
-// Updating pivot to match the centroid of the main triangle
-// Coordinates: (320,100)-(220,250)-(420,250)
-// Adjusting translate to keep the scaling behavior the same
+// Other code above
 
-function setup() {
-    createCanvas(640, 480);
-}
+// Update the pivot translation
+Personaje.pivot.translate(-320, -200); // changed from -175 to -200
 
-function draw() {
-    background(200);
-    translate(-320, -200); // centroid y=200
-    // Drawing the triangle
-    triangle(320, 100, 220, 250, 420, 250);
-    // Draw additional elements as necessary
-}
+// Other code below
