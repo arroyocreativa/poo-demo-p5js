@@ -1,259 +1,146 @@
 # poo-demo-p5js
 
-Sistema de dibujo interactivo desarrollado con **p5.js** aplicando el **patrón de diseño Factory** y principios de **Programación Orientada a Objetos**.
+App de dibujo interactivo con p5.js para enseñar Programación Orientada a Objetos (POO), herencia y patrón de diseño Factory.
 
----
+## Objetivo pedagógico
 
-## 🚀 Demo
+Este proyecto muestra cómo pasar de "dibujar formas" a diseñar un sistema orientado a objetos donde:
 
-Abre `index.html` en tu navegador (o usa [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) en VS Code).
+1. Hay una clase base con comportamiento común.
+2. Hay subclases que implementan su propia forma de dibujar.
+3. Un Factory decide qué clase instanciar según un tipo.
+4. El resto de la app usa una interfaz uniforme (polimorfismo).
 
-### Controles
+## Estado actual de la app
 
-| Acción | Tecla / Gesto |
+La app funciona con 4 tipos de figura:
+
+1. `circulo`
+2. `cuadrado`
+3. `triangulo`
+4. `billCipher`
+
+Comportamiento principal:
+
+1. Menú superior con botones de figuras.
+2. Dibujo continuo manteniendo clic en el canvas.
+3. Vista previa de la figura activa cerca del cursor.
+4. Ajuste de tamaño con teclado o rueda del mouse.
+5. Limpieza del lienzo con tecla `C`.
+
+## Controles
+
+| Acción | Entrada |
 |---|---|
-| Seleccionar figura | Clic en botón del menú |
-| Dibujar | Mantener clic en el canvas |
-| Cambiar color (8 opciones) | Teclas `1` – `8` |
-| Aumentar tamaño | `+` o rueda del mouse ↑ |
-| Reducir tamaño | `-` o rueda del mouse ↓ |
-| Limpiar canvas | `c` |
+| Seleccionar figura | Clic en un botón del menú superior |
+| Dibujar | Mantener presionado el mouse en el canvas |
+| Aumentar tamaño | `+` o `=` |
+| Reducir tamaño | `-` |
+| Ajustar tamaño con rueda | Scroll arriba/abajo |
+| Limpiar dibujo | `C` |
 
----
+## Arquitectura POO (clases y subclases)
 
-## 🧩 Práctica: De clase simple a sistema de dibujo interactivo
+### 1) Clase base: `Figura`
 
-### 🎯 Objetivo
+Archivo: `figuras/Figura.js`
 
-Transformar una clase base (`Figura`) en un sistema donde:
+Responsabilidades:
 
-```js
-class Figura {
-  constructor(x, y, tam, col) {
-    this.x = x;
-    this.y = y;
-    this.tam = tam;
-    this.col = col;
-  }
-  display() {
-    fill(this.col);
-    ellipse(this.x, this.y, this.tam);
-  }
-}
-```
+1. Guardar estado común: `x`, `y`, `tam`, `col`, `tipo`.
+2. Definir la interfaz común: `display()` y `displayOutline()`.
+3. Ofrecer utilidad compartida: `isClicked(mx, my)` para detectar clics en menú.
 
-- Existan **múltiples tipos de figura**
-- Haya un **menú de selección**
-- Se pueda **dibujar con el mouse (clic sostenido)**
+Idea clave:
 
----
+- `Figura` abstrae "algo dibujable".
+- No define una forma específica: eso lo resuelven las subclases.
 
-### 1. 🧱 Entender la clase base
+### 2) Subclases concretas
 
-Partimos de esto:
+Archivos:
 
-- Una clase `Figura` con:
-  - `x`, `y` → posición
-  - `tam` → tamaño
-  - `col` → color
-- Un método:
-  - `display()` → dibuja un círculo
+1. `figuras/Circulo.js`
+2. `figuras/Cuadrado.js`
+3. `figuras/Triangulo.js`
+4. `figuras/BillCipher.js`
 
-> ¿Qué pasaría si quisiéramos dibujar algo que **no** sea un círculo?
+Cada subclase:
 
----
+1. Hereda de `Figura` (`extends Figura`).
+2. Implementa su forma en `_drawShape()`.
+3. Implementa `display()` (relleno + borde).
+4. Implementa `displayOutline()` (solo contorno para preview).
 
-### 2. 🔧 Extender la clase con herencia
+Esto permite polimorfismo: el programa llama `display()` sin saber si es círculo, triángulo o Bill Cipher.
 
-En lugar de agregar un `if` por cada tipo dentro de una sola clase, creamos **subclases** especializadas:
+## Patrón Factory aplicado
 
-```js
-class Figura {
-  constructor(x, y, tam, col, tipo) {
-    this.x = x; this.y = y;
-    this.tam = tam; this.col = col;
-    this.tipo = tipo;
-  }
-  display() {}
-  isClicked(mx, my) {
-    return dist(mx, my, this.x, this.y) < this.tam / 2;
-  }
-}
+Archivo: `figuras/FiguraFactory.js`
 
-class Circulo extends Figura {
-  display() { fill(this.col); ellipse(this.x, this.y, this.tam); }
-}
+`FiguraFactory.crear(tipo, x, y, tam, col)` centraliza la creación de objetos:
 
-class Cuadrado extends Figura {
-  display() {
-    fill(this.col);
-    rectMode(CENTER);
-    rect(this.x, this.y, this.tam, this.tam);
-    rectMode(CORNER);
-  }
-}
+1. Si `tipo` es `circulo`, retorna `new Circulo(...)`.
+2. Si `tipo` es `cuadrado`, retorna `new Cuadrado(...)`.
+3. Si `tipo` es `triangulo`, retorna `new Triangulo(...)`.
+4. Si `tipo` es `billCipher`, retorna `new BillCipher(...)`.
+5. Si no coincide, usa `Circulo` por defecto.
 
-class Triangulo extends Figura {
-  display() {
-    fill(this.col);
-    triangle(
-      this.x,                this.y - this.tam / 2,
-      this.x - this.tam / 2, this.y + this.tam / 2,
-      this.x + this.tam / 2, this.y + this.tam / 2
-    );
-  }
-}
-```
+Ventaja didáctica:
 
----
+- El código cliente no necesita conocer clases concretas.
+- La lógica de construcción queda en un solo punto.
+- Agregar nuevas figuras requiere cambios mínimos y localizados.
 
-### 3. 🏭 Aplicar el patrón Factory
+## Flujo de ejecución (cómo se conecta todo)
 
-El **Factory** centraliza la creación de objetos. En lugar de escribir `new Circulo(...)` o `new Cuadrado(...)` en cada lugar del código, delegamos esa decisión a un único método:
+1. `index.html` carga p5.js y luego las clases en orden:
+   `Figura` -> subclases -> `FiguraFactory` -> `sketch.js`.
+2. En `setup()`, se crea el menú con `FiguraFactory.crear(...)`.
+3. En `draw()`, al mantener clic, se agregan instancias a `dibujos`.
+4. Luego se recorre `dibujos` y se llama `display()` a cada objeto.
+5. Para vista previa, se crea una figura temporal y se llama `displayOutline()`.
 
-```js
-class FiguraFactory {
-  static crear(tipo, x, y, tam, col) {
-    switch (tipo) {
-      case 'circulo':   return new Circulo(x, y, tam, col, tipo);
-      case 'cuadrado':  return new Cuadrado(x, y, tam, col, tipo);
-      case 'triangulo': return new Triangulo(x, y, tam, col, tipo);
-      default:          return new Circulo(x, y, tam, col, 'circulo');
-    }
-  }
-}
-```
+## ¿Dónde se ve la POO en este proyecto?
 
-Ahora cualquier parte del código que necesite crear una figura llama a:
+1. Encapsulación: cada objeto figura guarda su propio estado.
+2. Herencia: clases hijas reutilizan estructura de `Figura`.
+3. Polimorfismo: mismo mensaje (`display`) para objetos distintos.
+4. Abstracción: `Figura` define "qué" debe poder hacer una figura, no "cómo".
 
-```js
-FiguraFactory.crear('cuadrado', mouseX, mouseY, 30, '#3b82f6');
-```
+## Cómo ejecutar
 
----
+1. Abre `index.html` en navegador.
+2. Recomendado en VS Code: extensión Live Server para recarga rápida.
 
-### 4. 🎛️ Crear menú de selección
-
-Usamos la factory para crear los botones del menú:
-
-```js
-const TIPOS = ['circulo', 'cuadrado', 'triangulo'];
-const MENU_COLS = ['#ef4444', '#22c55e', '#3b82f6'];
-
-for (let i = 0; i < TIPOS.length; i++) {
-  menu.push(FiguraFactory.crear(TIPOS[i], 60 + i * 70, 50, 40, MENU_COLS[i]));
-}
-```
-
----
-
-### 5. 🖱️ Detectar clics en el menú
-
-El método `isClicked` heredado de `Figura` permite detectar si el puntero está dentro del botón:
-
-```js
-function mousePressed() {
-  for (const item of menu) {
-    if (item.isClicked(mouseX, mouseY)) {
-      figuraActiva = item.tipo;
-      return;
-    }
-  }
-}
-```
-
----
-
-### 6. ✏️ Dibujar con clic sostenido
-
-```js
-let dibujos = [];
-
-// dentro de draw():
-if (mouseIsPressed && mouseY > MENU_HEIGHT) {
-  dibujos.push(
-    FiguraFactory.crear(figuraActiva, mouseX, mouseY, tamActual, colorActual)
-  );
-}
-
-for (const f of dibujos) {
-  f.display();
-}
-```
-
----
-
-### 7. 🎨 Mejoras progresivas
-
-#### Nivel 1 – Color dinámico
-
-Teclas `1`–`8` cambian `colorActual` de una paleta predefinida.
-
-#### Nivel 2 – Tamaño variable
-
-`+` / `-` o la rueda del mouse modifican `tamActual`.
-
-#### Nivel 3 – Retroalimentación visual del menú
-
-```js
-if (item.tipo === figuraActiva) {
-  stroke(30); strokeWeight(3);
-} else {
-  noStroke();
-}
-```
-
-#### Nivel 4 – Limpiar pantalla
-
-```js
-function keyPressed() {
-  if (key === 'c' || key === 'C') dibujos = [];
-}
-```
-
-#### Nivel 5 – Herencia (opcional)
-
-Las clases hijas `Circulo`, `Cuadrado` y `Triangulo` ya implementan herencia sobre `Figura`.
-
----
-
-## 💬 Discusión clave
-
-> ¿Es mejor usar `tipo` (condicional) o herencia + Factory?
-
-| Enfoque | Cuándo conviene |
-|---|---|
-| **`tipo` con `if/switch`** | Proyectos pequeños, pocas variaciones, prototipado rápido |
-| **Herencia + Factory** | Cuando el número de variantes puede crecer, se quiere código extensible (principio Open/Closed), o varios módulos crean objetos del mismo tipo |
-
----
-
-## 🧠 Preguntas de reflexión
-
-- ¿Qué hace que esto sea **Programación Orientada a Objetos**?
-- ¿Dónde está la **abstracción**? (pista: `display()` en la clase base)
-- ¿Qué **responsabilidades** tiene cada clase?
-- ¿Qué pasaría si quisiéramos **guardar el dibujo** como imagen o JSON?
-- ¿Cómo añadirías un nuevo tipo de figura (por ejemplo, una estrella) con el mínimo de cambios?
-
----
-
-## 🚀 Extensión creativa
-
-Piensa en esto como un **instrumento** más que como un ejercicio:
-
-- 🎵 **Dibujar con sonido** – el tamaño o color responde a la amplitud del micrófono
-- ⏱️ **Dibujar con tiempo** – figuras que aparecen, crecen y desaparecen (animaciones)
-- 🔁 **Dibujar con reglas** – simetría axial, radial, fractales
-- ↩️ **Dibujar con memoria** – undo / redo con una pila de estados
-
----
-
-## 📁 Estructura del proyecto
+## Estructura actual del proyecto
 
 ```
 poo-demo-p5js/
-├── index.html   # Página host (carga p5.js y sketch.js)
-├── p5.min.js    # Biblioteca p5.js (incluida localmente)
-└── sketch.js    # Lógica: Factory, clases, dibujo interactivo
+├── index.html
+├── p5.min.js
+├── sketch.js
+├── README.md
+└── figuras/
+    ├── Figura.js
+    ├── FiguraFactory.js
+    ├── Circulo.js
+    ├── Cuadrado.js
+    ├── Triangulo.js
+    ├── BillCipher.js
+    └── EjemploSubclase.js
 ```
+
+## Actividad sugerida para clase
+
+Agregar una nueva subclase `Estrella` y conectarla al sistema.
+
+Pasos:
+
+1. Crear `figuras/Estrella.js` con `class Estrella extends Figura`.
+2. Implementar `_drawShape()`, `display()` y `displayOutline()`.
+3. Cargar el script en `index.html` antes de `FiguraFactory.js`.
+4. Agregar caso `estrella` en `FiguraFactory.crear(...)`.
+5. Incluir `estrella` en `TIPOS` y su color en `MENU_COLS` en `sketch.js`.
+
+Con esto se evidencia el principio Open/Closed: extender comportamiento sin reescribir toda la app.
