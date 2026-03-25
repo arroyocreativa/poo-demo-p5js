@@ -1,5 +1,10 @@
 // Ejemplo de figura compleja
 class BillCipher extends Figura {
+  constructor(x, y, tam, tipo) {
+    super(x, y, tam, tipo);
+    this.col = "#f59e0b";
+  }
+
   _drawShape() {
     push();
 

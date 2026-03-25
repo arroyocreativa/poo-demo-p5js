@@ -4,12 +4,10 @@
 let menu = [];
 let dibujos = [];
 let figuraActiva = "circulo";
-let colorActual = "#ef4444";
 let tamActual = 30;
 
 const MENU_HEIGHT = 90;
 const TIPOS = ["circulo", "cuadrado", "triangulo", "billCipher"];
-const MENU_COLS = ["#ef4444", "#22c55e", "#3b82f6", "#f59e0b"];
 const WHEEL_SENSITIVITY = 0.05;
 
 function setup() {
@@ -17,7 +15,7 @@ function setup() {
   noStroke();
 
   for (let i = 0; i < TIPOS.length; i++) {
-    menu.push(FiguraFactory.crear(TIPOS[i], 60 + i * 70, 50, 40, MENU_COLS[i]));
+    menu.push(FiguraFactory.crear(TIPOS[i], 60 + i * 70, 50, 40));
   }
 }
 
@@ -25,7 +23,7 @@ function draw() {
   background(245);
 
   if (mouseIsPressed && mouseY > MENU_HEIGHT) {
-    dibujos.push(FiguraFactory.crear(figuraActiva, mouseX, mouseY, tamActual, colorActual));
+    dibujos.push(FiguraFactory.crear(figuraActiva, mouseX, mouseY, tamActual));
   }
 
   for (const f of dibujos) f.display();
@@ -42,7 +40,7 @@ function draw() {
   noStroke();
 
   if (mouseY > MENU_HEIGHT) {
-    const preview = FiguraFactory.crear(figuraActiva, mouseX, mouseY, tamActual, colorActual);
+    const preview = FiguraFactory.crear(figuraActiva, mouseX, mouseY, tamActual);
     preview.displayOutline();
     noStroke();
   }
@@ -52,7 +50,6 @@ function mousePressed() {
   for (const item of menu) {
     if (item.isClicked(mouseX, mouseY)) {
       figuraActiva = item.tipo;
-      colorActual = item.col;
       return;
     }
   }

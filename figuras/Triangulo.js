@@ -1,4 +1,9 @@
 class Triangulo extends Figura {
+  constructor(x, y, tam, tipo) {
+    super(x, y, tam, tipo);
+    this.col = "#3b82f6";
+  }
+
   _drawShape() {
     triangle(
       this.x, this.y - this.tam / 2,
