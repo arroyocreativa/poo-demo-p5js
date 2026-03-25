@@ -82,6 +82,79 @@ class Triangulo extends Figura {
   }
 }
 
+// Personaje basado en el dibujo estático proporcionado.
+// La posición es relativa a (this.x, this.y) y el tamaño se controla con this.tam.
+// El personaje se define en un "tamaño base" (150) y se escala proporcionalmente.
+class Personaje extends Figura {
+  _drawShape() {
+    push();
+
+    // Mover a la posición del puntero
+    translate(this.x, this.y);
+
+    // Escala: el dibujo original ocupa aprox 150px de alto (de y=100 a y=250)
+    const s = this.tam / 150;
+    scale(s);
+
+    // Anclar el personaje al centro (el dibujo original tiene centro en x=320)
+    // y su "cabeza" comienza en y=100; lo centramos usando offsets.
+    translate(-320, -175);
+
+    // === Cabeza/triángulo ===
+    fill('yellow');
+    strokeWeight(2);
+    triangle(320, 100, 220, 250, 420, 250);
+
+    // === Piernas ===
+    strokeWeight(4);
+    // pierna izquierda
+    line(280, 250, 250, 300);
+    line(250, 300, 280, 340);
+    line(280, 340, 260, 350);
+
+    // pierna derecha
+    line(360, 250, 370, 340);
+    line(370, 340, 390, 340);
+
+    // === Corbatín ===
+    fill(0);
+    triangle(320, 220, 300, 210, 300, 230);
+    triangle(320, 220, 340, 210, 340, 230);
+
+    // === Ojo ===
+    fill('white');
+    strokeWeight(1);
+    circle(320, 170, 50);
+    fill(0);
+    ellipse(320, 170, 10, 30);
+
+    pop();
+  }
+
+  display() {
+    // El personaje usa su propia paleta, ignorando this.col
+    stroke(0);
+    this._drawShape();
+    noStroke();
+  }
+
+  displayOutline() {
+    // Contorno simple para el preview: dibujamos igual pero con noFill para lo que aplique
+    // y un stroke semitransparente.
+    push();
+    stroke(this.col);
+    strokeWeight(2);
+    noFill();
+
+    // Para conservar el aspecto del personaje en preview, reutilizamos la misma geometría
+    // pero dejamos fills controlados dentro del shape.
+    // En este caso, el outline será el stroke aplicado a las primitivas.
+    this._drawShape();
+
+    pop();
+  }
+}
+
 // --- Factory ---
 class FiguraFactory {
   static crear(tipo, x, y, tam, col) {
@@ -89,6 +162,7 @@ class FiguraFactory {
       case 'circulo':   return new Circulo(x, y, tam, col, tipo);
       case 'cuadrado':  return new Cuadrado(x, y, tam, col, tipo);
       case 'triangulo': return new Triangulo(x, y, tam, col, tipo);
+      case 'personaje': return new Personaje(x, y, tam, col, tipo);
       default:          return new Circulo(x, y, tam, col, 'circulo');
     }
   }
@@ -102,8 +176,8 @@ let colorActual = '#1a1a1a';
 let tamActual = 30;
 
 const MENU_HEIGHT = 90;
-const TIPOS = ['circulo', 'cuadrado', 'triangulo'];
-const MENU_COLS = ['#ef4444', '#22c55e', '#3b82f6'];
+const TIPOS = ['circulo', 'cuadrado', 'triangulo', 'personaje'];
+const MENU_COLS = ['#ef4444', '#22c55e', '#3b82f6', '#f59e0b'];
 const COLORES = [
   '#1a1a1a', '#ef4444', '#f97316',
   '#eab308', '#22c55e', '#3b82f6',
