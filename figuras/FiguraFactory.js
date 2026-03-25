@@ -9,6 +9,8 @@ class FiguraFactory {
         return new Triangulo(x, y, tam, tipo);
       case "billCipher":
         return new BillCipher(x, y, tam, tipo);
+      case "mariposa":
+        return new Mariposa(x, y, tam, tipo);
       default:
         return new Circulo(x, y, tam, "circulo");
     }
